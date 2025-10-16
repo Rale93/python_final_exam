@@ -1,0 +1,39 @@
+[
+    {
+        "name": "Dragan Petrovic",
+        "email": "dp@yahoo.com",
+        "ip": "245.121.132.6",
+        "devices": [
+            "desktop RTRK-02",
+            "mobile MB-546",
+            "watch W-123"
+        ]
+    },
+    {
+        "name": "Dragan Jovanovic",
+        "email": "djovan@jgmail.com",
+        "ip": "2.111.255.12",
+        "devices": [
+            "desktop RTRK-07",
+            "lamp L-0125"
+        ]
+    },
+    {
+        "name": "Milos Milutinovic",
+        "email": "mmilos@jhotmail.rs",
+        "ip": "2.108.255.12",
+        "devices": [
+            "desktop RTRK-07",
+            "lamp L-0125"
+        ]
+    },
+    {
+        "name": "Marko Markovic",
+        "email": "markom@gmail.com",
+        "ip": "192.168.1.12",
+        "devices": [
+            "desktop RTRK-07",
+            "lamp L-0125"
+        ]
+    }
+]
