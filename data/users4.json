@@ -35,5 +35,42 @@
             "desktop RTRK-07",
             "lamp L-0125"
         ]
+    },
+    {
+        "name": "Mirka Mirkanovic",
+        "email": "mirkamirm@yahoo.com",
+        "ip": "148.168.170.35",
+        "devices": [
+            "desktop RTRK-78",
+            "mobile nd-546"
+        ]
+    },
+    {
+        "name": "Vuk Vuckovic",
+        "email": "vukvuc@yahoo.com",
+        "ip": "192.169.1.4",
+        "devices": [
+            "mobile LD-4",
+            "watch W-45"
+        ]
+    },
+    {
+        "name": "Milica Veljic",
+        "email": "mvvv@jhotmail.rs",
+        "ip": "4.5089",
+        "devices": [
+            "mobile xiaomi-4",
+            "watch SS-445"
+        ]
+    },
+    {
+        "name": "Marija Matic",
+        "email": "marija.com",
+        "ip": "192.44.2.56",
+        "devices": [
+            "desktop RTRK-44",
+            "mobile DD-58",
+            "watch SSD-22"
+        ]
     }
 ]

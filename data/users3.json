@@ -35,5 +35,41 @@
             "desktop RTRK-07",
             "lamp L-0125"
         ]
+    },
+    {
+        "name": "Darko Milovic",
+        "email": "dm@yahoo.com",
+        "ip": "245.170.170.98",
+        "devices": [
+            "lamp L-210",
+            "mobile SD-555"
+        ]
+    },
+    {
+        "name": "Stefan Momcilovic",
+        "email": "dragance@jhotmal.rs",
+        "ip": "192.168.170.58",
+        "devices": [
+            "desktop RTRK-44",
+            "lamp L-478"
+        ]
+    },
+    {
+        "name": "Ilija Kostic",
+        "email": "dragance@jhotmal.rs",
+        "ip": "1.170.255.56",
+        "devices": [
+            "desktop RTRK-44",
+            "lamp L-478"
+        ]
+    },
+    {
+        "name": "Zorana Dragic",
+        "email": "zoranz@gmail.rs",
+        "ip": "1.170.255.56",
+        "devices": [
+            "mobile MD-458",
+            "lamp M-124"
+        ]
     }
 ]
