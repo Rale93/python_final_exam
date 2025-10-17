@@ -1,5 +1,7 @@
 import json
 import re
+import os
+from pathlib import Path
 
 class UserRegister:
     EMAIL_REGEX = re.compile(r"^[\w\.-]+@[\w\.-]+\.[a-zA-Z]{2,}$")
@@ -9,7 +11,7 @@ class UserRegister:
         self.users = {}
         for file in json_files:
             try:
-                with open(file, 'r', encoding='utf-8') as f:
+                with open(file, 'r') as f:
                     data = json.load(f)
             except Exception as e:
                 print(f"Failed to load {file}: {e}")
@@ -74,3 +76,20 @@ class UserRegister:
                 'devices': merged_devices
             }
         return new_register
+
+if __name__ == "__main__":
+
+    data_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "data"))
+    files = list(Path(data_dir).glob("*.json"))
+    file_paths = [str(f) for f in files]
+
+    print("Found JSON files:")
+    for f in file_paths:
+        print(f)
+
+    register = UserRegister(file_paths)
+    print(f"\nUkupno korisnika (bez duplikata i sa validnim podacima): {len(register)}\n")
+
+    print("Korisnici u registru:\n")
+    for email, user in register.users.items():
+        print(user['name'])
