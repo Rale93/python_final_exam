@@ -53,6 +53,27 @@ class UserRegister:
 
     def __setitem__(self, email, value):
         self.users[email] = value
+  
+    def get_name(self, email):
+        return self.users[email]["name"]
+
+    def get_ip(self, email):
+        return self.users[email]["ip"]
+
+    def get_devices(self, email):
+        return self.users[email]["devices"]
+
+    def set_name(self, email, name):
+        self.users[email]["name"] = name
+
+    def set_ip(self, email, ip):
+        if self._valid_ipv4(ip):
+            self.users[email]["ip"] = ip
+        else:
+            print(f"Invalid IP format address: {ip}, enter valid format.")
+
+    def set_devices(self, email, devices):
+        self.users[email]["devices"] = devices
 
     def __add__(self, other):
         new_register = UserRegister([])
