@@ -2,6 +2,7 @@ import json
 import re
 import os
 from pathlib import Path
+from collections import Counter
 
 class UserRegister:
     EMAIL_REGEX = re.compile(r"^[\w\.-]+@[\w\.-]+\.[a-zA-Z]{2,}$")
@@ -9,6 +10,9 @@ class UserRegister:
 
     def __init__(self, json_files):
         self.users = {}
+        self.email_counter = Counter()
+        self.ip_counter = Counter()
+
         for file in json_files:
             try:
                 with open(file, 'r') as f:
@@ -27,6 +31,10 @@ class UserRegister:
                 if not self._valid_ipv4(ip):
                     print(f"Invalid IPv4: {ip} for {email} in {file}")
                     continue
+
+                self.email_counter[email] += 1
+                self.ip_counter[ip] += 1
+
                 if email in self.users:
                     self.users[email]['devices'] = list(set(self.users[email]['devices']) | set(devices))
                 else:
@@ -44,6 +52,12 @@ class UserRegister:
             return False
         parts = ip.split('.')
         return all(0 <= int(part) <= 255 for part in parts)
+    
+    def duplicate_emails(self):
+        return {email: count for email, count in self.email_counter.items() if count > 1}
+
+    def duplicate_ips(self):
+        return {ip: count for ip, count in self.ip_counter.items() if count > 1}
 
     def __len__(self):
         return len(self.users)
@@ -109,8 +123,14 @@ if __name__ == "__main__":
         print(f)
 
     register = UserRegister(file_paths)
-    print(f"\nUkupno korisnika (bez duplikata i sa validnim podacima): {len(register)}\n")
+    print(f"\nNumber of the valid users: {len(register)}\n")
 
-    print("Korisnici u registru:\n")
+    print("List of users inside register:\n")
     for email, user in register.users.items():
         print(user['name'])
+
+    print(f"\nNumber of the duplicate users: {len(register.duplicate_emails()) + len(register.duplicate_ips())}\n")
+
+    print(f"List of duplicate emails: {register.duplicate_emails()}\n")
+
+    print(f"List of duplicate ip addresses: {register.duplicate_ips()}\n")
