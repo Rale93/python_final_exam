@@ -27,3 +27,67 @@ class TestUserRegister(unittest.TestCase):
         self.assertIsInstance(self.reg.ip_counter, dict)
         self.assertGreaterEqual(sum(self.reg.email_counter.values()), len(self.reg.users))
         self.assertGreaterEqual(sum(self.reg.ip_counter.values()), len(self.reg.users))
+
+    # Test 6: __getitem__ returns user data
+    def test_getitem(self):
+        """Test __getitem__ returns correct user data by email"""
+        for email in self.reg.user:
+            user = self.reg[email]
+            self.assertIn(email, self.reg.users)
+            self.assertEqual(user, self.reg.users[email])
+
+            self.assertIsInstance(user['name'], str)
+            self.assertIsInstance(user['ip'], str)
+            self.assertIsInstance(user['devices'], list)
+
+    # Test 7: __setitem__ updates or adds a user
+    def test_setitem(self):
+        """Test __setitem__ adds a new user or updates existing one"""
+        new_email = "urosradic92@gmail.com"
+        new_user_data = {
+            "name": "Uros Radic",
+            "ip": "192.168.170.15",
+            "devices": [
+                "desktop RTRK-88",
+                "lamp F-3285"
+            ]
+        }
+        self.reg[new_email] = new_user_data
+        self.assertIn(new_email, self.reg.users)
+        self.assertEqual(self.reg[new_email],  new_user_data)
+
+        self.assertEqual(self.reg.get_name(new_email), "Uros Radic")
+        self.assertEqual(self.reg.get_ip(new_email), "192.168.170.15")
+        self.assertCountEqual(self.reg.get_devices(new_email), ["desktop RTRK-88", "lamp F-3285"])
+
+        updated_user_data = {
+            "name": "Marko Radic",
+            "ip": "192.168.170.22",
+            "devices": [
+                "desktop RTRK-99",
+            ]
+        }
+        self.reg[new_email] = updated_user_data
+        self.assertIn(new_email, self.reg.users)
+        self.assertEqual(self.reg[new_email],  updated_user_data)
+
+        self.assertEqual(self.reg.get_name(new_email), "Marko Radic")
+        self.assertEqual(self.reg.get_ip(new_email), "192.168.170.22")
+        self.assertCountEqual(self.reg.get_devices(new_email), ["desktop RTRK-99"])
+
+    # Test 8: get_name returns user name
+    def test_get_name(self):
+        """Test get_name returns user name"""
+        for email, user in self.reg.user.items():
+            name = self.reg.get_name(email)
+            self.assertIsInstance(name, str)
+            self.assertEqual(name, user["name"])
+            self.assertGreater(len(name), 0, f"Name should not be empty for {email}")
+
+    # Test 9: get_ip returns user ip address
+    def test_get_ip(self):
+        """Test get_ip returns user ip address"""
+        for email, user in self.reg.user.items():
+            ip = self.reg.get_ip(email)
+            self.assertIsInstance(ip, str)
+            self.assertEqual(ip, user["ip"])
