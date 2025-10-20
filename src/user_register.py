@@ -125,11 +125,11 @@ if __name__ == "__main__":
     register = UserRegister(file_paths)
     print(f"\nNumber of the valid users: {len(register)}\n")
 
-    print("List of users inside register:\n")
+    print("List of users inside register (name, email, devices, IP address):\n")
     for email, user in register.users.items():
-        print(user['name'])
+        print(f"Name: {user['name']}, Email: {email}, Devices: {user['devices']}, IP: {user['ip']}")
 
-    print(f"\nNumber of the duplicate users: {len(register.duplicate_emails()) + len(register.duplicate_ips())}\n")
+    print(f"\nNumber of unique duplicate emails and IPs (total): {len(register.duplicate_emails()) + len(register.duplicate_ips())}\n")
 
     print(f"List of duplicate emails: {register.duplicate_emails()}\n")
 

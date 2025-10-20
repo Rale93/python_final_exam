@@ -42,7 +42,8 @@
         "ip": "192.168.132.6",
         "devices": [
             "mobile MB-546",
-            "watch W-123"
+            "desktop RTRK-07",
+            "device for testing"
         ]
     },
     {
