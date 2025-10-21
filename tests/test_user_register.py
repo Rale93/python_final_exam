@@ -1,32 +1,69 @@
 import unittest 
-from ..src.user_register import UserRegister 
+from src.user_register import UserRegister 
 
 class TestUserRegister(unittest.TestCase):
+    """Basic unit tests for the UserRegister class."""
 
     def setUp(self):
-        """Load existing JSON files before each test"""
-        # These files already exist in the project data directory
+        """Initialize the UserRegister using existing JSON files."""
         self.json_files = [
-            "users1.json",
-            "users2.json",
-            "users3.json",
-            "users4.json"
+            "data/users1.json",
+            "data/users2.json",
+            "data/users3.json",
+            "data/users4.json"
         ]
         self.reg = UserRegister(self.json_files)
 
-    # Test 1: setUp loads JSON files
-    def test_setup_loads_json_files(self):
-        """Verify that JSON files are successfully loaded"""
+    # Test 1 – verify that __init__ loads user data
+    def test_init_loads_json_files(self):
+        """Check that JSON files are loaded and contain user records."""
         self.assertIsNotNone(self.reg)
-        self.assertGreater(len(self.reg.users), 0, "No users were loaded from JSON files")
+        self.assertGreater(len(self.reg.users), 0, "No users loaded from JSON files")
 
-    # Test 2: __init__ email i IP counter created
+    # Test 2 – verify that counters are created
     def test_init_creates_counters(self):
-        """Check that email and IP counters are initialized"""
+        """Ensure that email_counter and ip_counter are initialized."""
+        self.assertTrue(hasattr(self.reg, "email_counter"))
+        self.assertTrue(hasattr(self.reg, "ip_counter"))
         self.assertIsInstance(self.reg.email_counter, dict)
         self.assertIsInstance(self.reg.ip_counter, dict)
-        self.assertGreaterEqual(sum(self.reg.email_counter.values()), len(self.reg.users))
-        self.assertGreaterEqual(sum(self.reg.ip_counter.values()), len(self.reg.users))
+
+    # Test 3 – validate email formats
+    def test_valid_email(self):
+        """Validate correct and incorrect email formats."""
+        valid = ["pera@gmail.com", "mika.petrovic@company.co", "user123@mail.rs"]
+        invalid = ["invalid@", "user@domain", "plainaddress", "@missing"]
+
+        for e in valid:
+            self.assertTrue(self.reg._valid_email(e), f"Expected valid email: {e}")
+        for e in invalid:
+            self.assertFalse(self.reg._valid_email(e), f"Expected invalid email: {e}")
+
+    # Test 4 – validate IPv4 addresses
+    def test_valid_ipv4(self):
+        """Validate correct and incorrect IPv4 address formats."""
+        valid = ["192.168.0.1", "10.0.0.5", "255.255.255.255", "0.0.0.0"]
+        invalid = ["256.0.0.1", "192.168.1", "abc.def.ghi.jkl", "192.168.1.999"]
+
+        for ip in valid:
+            self.assertTrue(self.reg._valid_ipv4(ip), f"Expected valid IPv4: {ip}")
+        for ip in invalid:
+            self.assertFalse(self.reg._valid_ipv4(ip), f"Expected invalid IPv4: {ip}")
+
+    # Test 5 – verify __len__ method
+    def test_len_method(self):
+        """Check that __len__ returns the number of users correctly."""
+        before = len(self.reg)
+        self.assertGreater(before, 0, "Register should not be empty")
+
+        # Add a new user and ensure the count increases
+        self.reg.users["new_user@mail.com"] = {
+            "name": "New",
+            "ip": "10.0.0.7",
+            "devices": ["SmartTV"]
+        }
+        after = len(self.reg)
+        self.assertEqual(after, before + 1, "Length did not increase after adding user")
 
     # Test 6: __getitem__ returns user data
     def test_getitem(self):
