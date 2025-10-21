@@ -156,7 +156,7 @@ class TestUserRegister(unittest.TestCase):
         self.assertEqual(self.reg.get_ip(email), valid_ip)
         old_ip = self.reg.get_ip(email)
         self.reg.set_ip(email, invalid_ip)
-        self.assertEqual(self.reg.get_ip(email), old_ip)  # Should not update
+        self.assertEqual(self.reg.get_ip(email), old_ip)
 
     # Test 13: set_devices updates user devices
     def test_set_devices(self):
