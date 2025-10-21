@@ -1,8 +1,11 @@
-import unittest 
-from src.user_register import UserRegister 
+
+import unittest
+import sys
+import os
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from src.user_register import UserRegister
 
 class TestUserRegister(unittest.TestCase):
-    """Basic unit tests for the UserRegister class."""
 
     def setUp(self):
         """Initialize the UserRegister using existing JSON files."""
@@ -68,7 +71,7 @@ class TestUserRegister(unittest.TestCase):
     # Test 6: __getitem__ returns user data
     def test_getitem(self):
         """Test __getitem__ returns correct user data by email"""
-        for email in self.reg.user:
+        for email in self.reg.users:
             user = self.reg[email]
             self.assertIn(email, self.reg.users)
             self.assertEqual(user, self.reg.users[email])
@@ -115,7 +118,7 @@ class TestUserRegister(unittest.TestCase):
     # Test 8: get_name returns user name
     def test_get_name(self):
         """Test get_name returns user name"""
-        for email, user in self.reg.user.items():
+        for email, user in self.reg.users.items():
             name = self.reg.get_name(email)
             self.assertIsInstance(name, str)
             self.assertEqual(name, user["name"])
@@ -124,7 +127,73 @@ class TestUserRegister(unittest.TestCase):
     # Test 9: get_ip returns user ip address
     def test_get_ip(self):
         """Test get_ip returns user ip address"""
-        for email, user in self.reg.user.items():
+        for email, user in self.reg.users.items():
             ip = self.reg.get_ip(email)
             self.assertIsInstance(ip, str)
             self.assertEqual(ip, user["ip"])
+            
+    # Test 10: get_devices returns user devices
+    def test_get_devices(self):
+        """Test get_devices returns user devices list"""
+        for email, user in self.reg.users.items():
+            devices = self.reg.get_devices(email)
+            self.assertIsInstance(devices, list)
+            self.assertEqual(set(devices), set(user["devices"]))
+
+    # Test 11: set_name updates user name
+    def test_set_name(self):
+        """Test set_name updates the user's name"""
+        for email in list(self.reg.users.keys())[:2]:
+            self.reg.set_name(email, "Test Name")
+            self.assertEqual(self.reg.get_name(email), "Test Name")
+
+    # Test 12: set_ip updates user ip if valid, does not update if invalid
+    def test_set_ip(self):
+        email = list(self.reg.users.keys())[0]
+        valid_ip = "8.8.8.8"
+        invalid_ip = "999.999.999.999"
+        self.reg.set_ip(email, valid_ip)
+        self.assertEqual(self.reg.get_ip(email), valid_ip)
+        old_ip = self.reg.get_ip(email)
+        self.reg.set_ip(email, invalid_ip)
+        self.assertEqual(self.reg.get_ip(email), old_ip)  # Should not update
+
+    # Test 13: set_devices updates user devices
+    def test_set_devices(self):
+        email = list(self.reg.users.keys())[0]
+        new_devices = ["DeviceA", "DeviceB"]
+        self.reg.set_devices(email, new_devices)
+        self.assertEqual(set(self.reg.get_devices(email)), set(new_devices))
+
+    # Test 14: duplicate_emails returns correct duplicates
+    def test_duplicate_emails(self):
+        dups = self.reg.duplicate_emails()
+        for email, count in dups.items():
+            self.assertGreaterEqual(count, 2)
+
+    # Test 15: duplicate_ips returns correct duplicates
+    def test_duplicate_ips(self):
+        dups = self.reg.duplicate_ips()
+        for ip, count in dups.items():
+            self.assertGreaterEqual(count, 2)
+
+    # Test 16: __add__ merges registers
+    def test_add_operator(self):
+        reg2 = UserRegister(self.json_files)
+        merged = self.reg + reg2
+        self.assertIsInstance(merged, UserRegister)
+        for email in self.reg.users:
+            self.assertIn(email, merged.users)
+            self.assertEqual(set(merged.get_devices(email)), set(self.reg.get_devices(email)))
+
+    # Test 17: __mul__ intersects registers
+    def test_mul_operator(self):
+        reg2 = UserRegister(self.json_files)
+        intersected = self.reg * reg2
+        self.assertIsInstance(intersected, UserRegister)
+        for email in intersected.users:
+            self.assertIn(email, self.reg.users)
+            self.assertIn(email, reg2.users)
+
+if __name__ == "__main__":
+    unittest.main()
