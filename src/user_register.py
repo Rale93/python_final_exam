@@ -3,6 +3,8 @@ import re
 import os
 from pathlib import Path
 from collections import Counter
+import tkinter as tk
+from tkinter import ttk
 
 class UserRegister:
     EMAIL_REGEX = re.compile(r"^[\w\.-]+@[\w\.-]+\.[a-zA-Z]{2,}$")
@@ -113,7 +115,6 @@ class UserRegister:
         return new_register
 
 if __name__ == "__main__":
-
     data_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "data"))
     files = list(Path(data_dir).glob("*.json"))
     file_paths = [str(f) for f in files]
@@ -134,3 +135,45 @@ if __name__ == "__main__":
     print(f"List of duplicate emails: {register.duplicate_emails()}\n")
 
     print(f"List of duplicate ip addresses: {register.duplicate_ips()}\n")
+
+    root = tk.Tk()
+    root.title("User Register Viewer")
+    root.geometry("900x600")
+    style = ttk.Style()
+    style.theme_use('clam')
+    style.configure('Treeview.Heading', font=('Segoe UI', 12, 'bold'))
+    style.configure('Treeview', font=('Segoe UI', 11), rowheight=28)
+
+    title_label = tk.Label(root, text="User Register", font=("Segoe UI", 22, "bold"), fg="#2c3e50")
+    title_label.pack(pady=16)
+
+    tab_control = ttk.Notebook(root)
+
+    tab_users = ttk.Frame(tab_control)
+    tab_control.add(tab_users, text='All Users')
+    tree = ttk.Treeview(tab_users, columns=("Name", "Email", "Devices", "IP"), show="headings", height=18)
+    tree.heading("Name", text="Name")
+    tree.heading("Email", text="Email")
+    tree.heading("Devices", text="Devices")
+    tree.heading("IP", text="IP Address")
+    tree.column("Name", width=180)
+    tree.column("Email", width=220)
+    tree.column("Devices", width=320)
+    tree.column("IP", width=120)
+    for email, user in register.users.items():
+        tree.insert("", tk.END, values=(user['name'], email, ", ".join(user['devices']), user['ip']))
+    tree.pack(fill=tk.BOTH, expand=True, padx=16, pady=12)
+
+    tab_dupes = ttk.Frame(tab_control)
+    tab_control.add(tab_dupes, text='Duplicates')
+    dupes_frame = tk.Frame(tab_dupes)
+    dupes_frame.pack(fill=tk.BOTH, expand=True, padx=16, pady=12)
+    lbl1 = tk.Label(dupes_frame, text=f"Number of unique duplicate emails and IPs (total): {len(register.duplicate_emails()) + len(register.duplicate_ips())}", font=("Segoe UI", 13, "bold"), fg="#c0392b")
+    lbl1.pack(anchor='w', pady=(0,8))
+    lbl2 = tk.Label(dupes_frame, text=f"List of duplicate emails: {register.duplicate_emails()}", font=("Segoe UI", 12), fg="#34495e")
+    lbl2.pack(anchor='w', pady=(0,8))
+    lbl3 = tk.Label(dupes_frame, text=f"List of duplicate ip addresses: {register.duplicate_ips()}", font=("Segoe UI", 12), fg="#34495e")
+    lbl3.pack(anchor='w')
+
+    tab_control.pack(expand=1, fill='both', padx=8, pady=8)
+    root.mainloop()
